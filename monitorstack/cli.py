@@ -13,15 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Handle all shell commands/arguments/options."""
+import importlib
 import json
 import os
+import pkgutil
 import sys
-
+import time
 
 import click
 
 
-CONTEXT_SETTINGS = dict(auto_envvar_prefix='MonitorStack')
+context_settings = dict(auto_envvar_prefix='MonitorStack')
+
+
+def current_time():
+    """Return the current time in nanoseconds"""
+
+    return int(time.time() * 1000000000)
 
 
 class Context(object):
@@ -45,41 +53,49 @@ class Context(object):
 
 
 pass_context = click.make_pass_decorator(Context, ensure=True)
-cmd_folder = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                          'plugins'))
 
 
 class MonitorStackCLI(click.MultiCommand):
     """Create a complex command finder."""
 
+    @property
+    def cmd_folder(self):
+        return os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__),
+                'plugins'
+            )
+        )
+
     def list_commands(self, ctx):
         """Get a list of all available commands."""
-        rv = []
-        for filename in os.listdir(cmd_folder):
-            if filename.endswith('.py') and not filename.startswith('__'):
-                rv.append(filename[:-3])
-        rv.sort()
-        return rv
+        rv = list()
+        for _, pkg_name, _ in pkgutil.iter_modules([self.cmd_folder]):
+            rv.append(pkg_name)
+        else:
+            return sorted(rv)
 
     def get_command(self, ctx, name):
         """Load a command and run it."""
-        try:
-            if sys.version_info[0] == 2:
-                name = name.encode('ascii', 'replace')
-            mod = __import__('monitorstack.plugins.' + name,
-                             None, None, ['cli'])
-        except ImportError:
-            return
-        return mod.cli
+        for _, pkg_name, _ in pkgutil.iter_modules([self.cmd_folder]):
+            if pkg_name == name:
+                mod = importlib.import_module(
+                    'monitorstack.plugins.{}'.format(name)
+                )
+                return getattr(mod, 'cli')
+
+        else:
+            raise SystemExit('Module "{}" Not Found.'.format(name))
 
 
 VALID_OUTPUT_FORMATS = [
     'json',
     'line',
+    'telegraf'
 ]
 
 
-@click.command(cls=MonitorStackCLI, context_settings=CONTEXT_SETTINGS)
+@click.command(cls=MonitorStackCLI, context_settings=context_settings)
 @click.option(
     '-f', '--format', 'output_format',
     type=click.Choice(VALID_OUTPUT_FORMATS),
@@ -106,8 +122,45 @@ def process_result(result, output_format, verbose):
         for key, value in result['variables'].items():
             click.echo("{} {}".format(key, value))
 
+    elif output_format == 'telegraf':
+        def line_format(sets, quote=False):
+            store = list()
+            for k, v in sets.items():
+                k = k.replace(' ', '_')
+                for v_type in [int, float]:
+                    try:
+                        v = v_type(v)
+                    except ValueError:
+                        pass  # v was not a int, float, or long
+                    else:
+                        break
+                if not isinstance(v, (int, float, bool)) and quote:
+                    store.append('{}="{}"'.format(k, v))
+                else:
+                    store.append('{}={}'.format(k, v))
+            return ','.join(store).rstrip(',')
+
+        resultant = [result['measurement_name']]
+        if 'meta' in result:
+            resultant.append(line_format(sets=result['meta']))
+        resultant.append(line_format(sets=result['variables'], quote=True))
+        resultant.append(current_time())
+        click.echo(' '.join(resultant))
+
     elif output_format == 'csv':
         pass
 
+
 if __name__ == '__main__':
+    topdir = os.path.normpath(
+        os.path.join(
+            os.path.abspath(
+                sys.argv[0]
+            ),
+            os.pardir,
+            os.pardir
+        )
+    )
+    sys.path.insert(0, topdir)
+
     cli()

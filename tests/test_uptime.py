@@ -11,11 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 """Tests for the base class."""
-import click
-from click.testing import CliRunner
+
 import json
 
+from click.testing import CliRunner
 
 from monitorstack.cli import cli
 

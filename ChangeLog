@@ -1,7 +1,6 @@
 CHANGES
 =======
 
-* Uptime class
-* Update README
-* Import
+* Couple of updates: telegraf line protocol, dynamic imports, metadata
+* Proof of concept
 * Initial commit

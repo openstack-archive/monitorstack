@@ -12,8 +12,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 """Base monitoring class."""
+
+import platform
+
 import click
+
 from monitorstack.cli import pass_context
 
 
@@ -27,6 +32,10 @@ def cli(ctx):
     output = {
         'exit_code': 0,
         'message': 'uptime is ok',
+        'measurement_name': 'system_uptime',
+        'meta': {
+            'platform': platform.platform()
+        },
         'variables': {
             'uptime': uptime
         }
