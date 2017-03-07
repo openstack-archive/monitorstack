@@ -14,22 +14,14 @@
 # limitations under the License.
 """Handle all shell commands/arguments/options."""
 import importlib
-import json
 import os
 import pkgutil
 import sys
-import time
 
 import click
 
 
 context_settings = dict(auto_envvar_prefix='MonitorStack')
-
-
-def current_time():
-    """Return the current time in nanoseconds"""
-
-    return int(time.time() * 1000000000)
 
 
 class Context(object):
@@ -42,8 +34,6 @@ class Context(object):
 
     def log(self, msg, *args):
         """Log a message to stderr."""
-        if args:
-            msg %= args
         click.echo(msg, file=sys.stderr)
 
     def vlog(self, msg, *args):
@@ -60,6 +50,7 @@ class MonitorStackCLI(click.MultiCommand):
 
     @property
     def cmd_folder(self):
+        """Get the path to the plugin directory."""
         return os.path.abspath(
             os.path.join(
                 os.path.dirname(__file__),
@@ -115,40 +106,13 @@ def cli(ctx, output_format, verbose):
 @cli.resultcallback(replace=True)
 def process_result(result, output_format, verbose):
     """Render the output into the proper format."""
-    if output_format == 'json':
-        click.echo(json.dumps(result, indent=2))
-
-    elif output_format == 'line':
-        for key, value in result['variables'].items():
-            click.echo("{} {}".format(key, value))
-
-    elif output_format == 'telegraf':
-        def line_format(sets, quote=False):
-            store = list()
-            for k, v in sets.items():
-                k = k.replace(' ', '_')
-                for v_type in [int, float]:
-                    try:
-                        v = v_type(v)
-                    except ValueError:
-                        pass  # v was not a int, float, or long
-                    else:
-                        break
-                if not isinstance(v, (int, float, bool)) and quote:
-                    store.append('{}="{}"'.format(k, v))
-                else:
-                    store.append('{}={}'.format(k, v))
-            return ','.join(store).rstrip(',')
-
-        resultant = [result['measurement_name']]
-        if 'meta' in result:
-            resultant.append(line_format(sets=result['meta']))
-        resultant.append(line_format(sets=result['variables'], quote=True))
-        resultant.append(current_time())
-        click.echo(' '.join(resultant))
-
-    elif output_format == 'csv':
-        pass
+    module_name = 'monitorstack.common.formatters'
+    method_name = 'write_{}'.format(output_format)
+    output_formatter = getattr(
+        importlib.import_module(module_name),
+        method_name
+    )
+    output_formatter(result)
 
 
 if __name__ == '__main__':
