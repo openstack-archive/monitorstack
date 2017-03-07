@@ -15,7 +15,6 @@
 """Tests for the base class."""
 
 import json
-import sys
 
 from click.testing import CliRunner
 
