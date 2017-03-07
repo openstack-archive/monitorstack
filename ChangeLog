@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-* Added KVM Metric plugin
-* Couple of updates: telegraf line protocol, dynamic imports, metadata
+* Added KVM Metric plugin (#2)
+* Couple of updates: telegraf line protocol, dynamic imports, metadata (#1)
 * Proof of concept
 * Initial commit

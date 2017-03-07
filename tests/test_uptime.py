@@ -15,10 +15,12 @@
 """Tests for the base class."""
 
 import json
+import sys
 
 from click.testing import CliRunner
 
 from monitorstack.cli import cli
+from monitorstack.plugins.uptime import get_uptime
 
 
 class TestUptime(object):
@@ -31,3 +33,9 @@ class TestUptime(object):
         result_json = json.loads(result.output)
         assert 'uptime' in result_json['variables']
         assert result.exit_code == 0
+
+    def test_get_uptime(self):
+        """Ensure the cli() method works."""
+        uptime = get_uptime()
+        assert isinstance(uptime, float)
+        assert uptime > 0
