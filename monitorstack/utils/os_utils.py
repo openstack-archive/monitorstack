@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""OpenStack-related utilities."""
 
 try:
     from openstack import connection as os_conn
@@ -24,14 +25,19 @@ from monitorstack import utils
 
 
 class OpenStack(object):
+    """Class for reusable OpenStack utility methods."""
+
     def __init__(self, os_auth_args):
+        """Initialization method for class."""
         self.os_auth_args = os_auth_args
 
     @property
     def conn(self):
+        """Return an OpenStackSDK connection."""
         return os_conn.Connection(**self.os_auth_args)
 
     def get_consumer_usage(self, servers=None, marker=None, limit=512):
+        """Retrieve current usage by an OpenStack cloud consumer."""
         tenant_kwargs = {'details': True, 'all_tenants': True, 'limit': limit}
         if not servers:
             servers = list()
@@ -53,6 +59,7 @@ class OpenStack(object):
         return servers
 
     def get_compute_limits(self, project_id, interface='internal'):
+        """Determine limits of compute resources."""
         url = self.conn.compute.session.get_endpoint(
             interface=interface,
             service_type='compute'
@@ -63,6 +70,7 @@ class OpenStack(object):
         return quota_data.json()
 
     def get_project_name(self, project_id):
+        """Retrieve the name of a project."""
         with utils.LocalCache() as c:
             try:
                 project_name = c.get(project_id)
@@ -75,6 +83,7 @@ class OpenStack(object):
                 return project_name
 
     def get_projects(self):
+        """Retrieve a list of projects."""
         _consumers = list()
         with utils.LocalCache() as c:
             for project in self.conn.identity.projects():
@@ -83,6 +92,7 @@ class OpenStack(object):
         return _consumers
 
     def get_flavors(self):
+        """Retrieve a list of flavors."""
         flavor_cache = dict()
         for flavor in self.conn.compute.flavors():
             entry = flavor_cache[flavor['id']] = dict()

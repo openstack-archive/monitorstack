@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Get nova used ram."""
 
 import collections
 
@@ -31,6 +32,7 @@ COMMAND_NAME = 'os_vm_used_ram'
               default='openstack.ini')
 @pass_context
 def cli(ctx, config_file):
+    """Get nova used ram."""
     setattr(cli, '__doc__', DOC)
 
     output = {

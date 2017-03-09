@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Get nova used disk."""
 
 import collections
 
@@ -31,6 +32,7 @@ COMMAND_NAME = 'os_vm_used_disk'
               default='openstack.ini')
 @pass_context
 def cli(ctx, config_file):
+    """Get nova used disk."""
     setattr(cli, '__doc__', DOC)
 
     output = {

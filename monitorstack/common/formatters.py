@@ -20,7 +20,6 @@ import click
 
 def write_json(result):
     """Output in raw JSON format."""
-
     output = json.dumps(result, indent=2)
     click.echo(output)
     return True
@@ -28,7 +27,6 @@ def write_json(result):
 
 def write_line(result):
     """Output in line format."""
-
     for key, value in result['variables'].items():
         click.echo("{} {}".format(key, value))
 
@@ -37,13 +35,11 @@ def write_line(result):
 
 def _current_time():
     """Return the current time in nanoseconds."""
-
     return int(time.time() * 1000000000)
 
 
 def _telegraf_line_format(sets, quote=False):
     """Return a comma separated string."""
-
     store = list()
     for k, v in sets.items():
         k = k.replace(' ', '_')
@@ -63,7 +59,6 @@ def _telegraf_line_format(sets, quote=False):
 
 def write_telegraf(result):
     """Output in telegraf format."""
-
     resultant = [result['measurement_name']]
     if 'meta' in result:
         resultant.append(_telegraf_line_format(sets=result['meta']))

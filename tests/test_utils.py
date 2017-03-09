@@ -24,6 +24,7 @@ class TestUtils(unittest.TestCase):
     """Tests for the utilities."""
 
     def setUp(self):
+        """Initial setup for class."""
         os_config_file = os.path.expanduser(
             os.path.abspath(__file__ + '/../../etc/openstack.ini')
         )
@@ -33,6 +34,7 @@ class TestUtils(unittest.TestCase):
         self.config_defaults = conf.defaults()
 
     def tearDown(self):
+        """Destroy the local cache."""
         local_cache = os.path.join(
             tempfile.gettempdir(),
             'monitorstack.openstack.dbm'
@@ -40,31 +42,33 @@ class TestUtils(unittest.TestCase):
         if os.path.exists(local_cache):
             os.remove(local_cache)
 
-    def test_is_int_is_int(self):
+    def test_is_int_is_int(self):  # noqa
         self.assertTrue(isinstance(utils.is_int(value=1), int))
 
-    def test_is_int_is_int_str(self):
+    def test_is_int_is_int_str(self):  # noqa
         self.assertTrue(isinstance(utils.is_int(value='1'), int))
 
-    def test_is_int_is_not_int(self):
+    def test_is_int_is_not_int(self):  # noqa
         self.assertTrue(isinstance(utils.is_int(value='a'), str))
 
-    def test_read_config_not_found(self):
+    def test_read_config_not_found(self):  # noqa
         self.assertRaises(
             IOError,
             utils.read_config,
             'not-a-file'
         )
 
-    def test_read_config_found_dict_return(self):
+    def test_read_config_found_dict_return(self):  # noqa
         self.assertTrue(isinstance(self.config, dict))
 
     def test_read_config_found_defaults_in_sections(self):
+        """Read config defaults from each section."""
         for k, v in self.config.items():
             for key in self.config_defaults.keys():
                 self.assertTrue(key in v.keys())
 
     def test_local_cache(self):
+        """Test local cache."""
         with utils.LocalCache() as c:
             c['test_key'] = True
             self.assertTrue('test_key' in c)

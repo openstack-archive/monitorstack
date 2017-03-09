@@ -38,7 +38,7 @@ class LibvirtStub(object):
 
         class lookupByID(object):  # noqa
             """Stubbed lookupByID class."""
-            def __init__(self, *args, **kwargs):
+            def __init__(self, *args, **kwargs): # noqa
                 pass
 
             def maxVcpus(self):  # noqa
@@ -50,7 +50,6 @@ class TestKvm(object):
 
     def test_run(self):
         """Ensure the run() method works."""
-
         sys.modules['libvirt'] = LibvirtStub
 
         runner = CliRunner()

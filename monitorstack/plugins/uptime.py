@@ -19,12 +19,14 @@ import click
 
 from monitorstack.cli import pass_context
 
+DOC = """Get system uptime."""
+COMMAND_NAME = 'uptime'
 
-@click.command('uptime', short_help='Get system uptime')
+
+@click.command(COMMAND_NAME, short_help=DOC)
 @pass_context
 def cli(ctx):
     """Get system uptime."""
-
     uptime = get_uptime()
     output = {
         'exit_code': 0,
@@ -42,7 +44,6 @@ def cli(ctx):
 
 def get_uptime():
     """Read the uptime from the proc filesystem."""
-
     with open('/proc/uptime', 'r') as f:
         output = f.read()
 

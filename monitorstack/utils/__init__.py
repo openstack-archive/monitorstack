@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Common code for utils."""
 
 import os
 import shelve
@@ -28,6 +29,7 @@ except ImportError:
 
 
 def is_int(value):
+    """Check if a variable is an integer."""
     for v_type in [int, float]:
         try:
             value = v_type(value)
@@ -43,6 +45,7 @@ class LocalCache(object):
     """Context Manager for opening and closing access to the DBM."""
 
     def __init__(self):
+        """Initialization method for class."""
         """Set the Path to the DBM to create/Open."""
 
         self.db_cache = os.path.join(
@@ -55,12 +58,10 @@ class LocalCache(object):
 
         :return: Open DBM
         """
-
         return self.open_shelve
 
     def __exit__(self, type, value, traceback):
         """Close DBM Connection."""
-
         self.close_shelve()
 
     def _open_shelve(self):
@@ -68,13 +69,16 @@ class LocalCache(object):
 
     @property
     def open_shelve(self):
+        """Open shelved data."""
         return self._open_shelve()
 
     def close_shelve(self):
+        """Close shelved data."""
         self.open_shelve.close()
 
 
 def read_config(config_file):
+    """Read an OpenStack configuration."""
     cfg = os.path.abspath(os.path.expanduser(config_file))
     if not os.path.isfile(cfg):
         raise IOError('Config file "{}" was not found'.format(cfg))

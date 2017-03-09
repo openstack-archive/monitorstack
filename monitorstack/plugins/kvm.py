@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Plugin for KVM metrics."""
+"""Get metrics from a KVM hypervisor."""
 
 import platform
 import socket
@@ -21,12 +21,14 @@ import click
 from monitorstack.cli import pass_context
 
 
-DOC = """Get metrics from a KVM hypervisor"""
+DOC = """Get metrics from a KVM hypervisor."""
+COMMAND = 'kvm'
 
 
-@click.command('kvm', short_help=DOC.split('\n')[0])
+@click.command(COMMAND, short_help=DOC.split('\n')[0])
 @pass_context
 def cli(ctx):
+    """Get metrics from a KVM hypervisor."""
     setattr(cli, '__doc__', DOC)
 
     # Lower level import because we only want to load this module

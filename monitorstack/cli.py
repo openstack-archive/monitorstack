@@ -51,7 +51,6 @@ class MonitorStackCLI(click.MultiCommand):
     @property
     def cmd_folder(self):
         """Get the path to the plugin directory."""
-
         return os.path.abspath(
             os.path.join(
                 os.path.dirname(__file__),
@@ -61,7 +60,6 @@ class MonitorStackCLI(click.MultiCommand):
 
     def list_commands(self, ctx):
         """Get a list of all available commands."""
-
         rv = list()
         for _, pkg_name, _ in pkgutil.iter_modules([self.cmd_folder]):
             rv.append(pkg_name)
@@ -70,7 +68,6 @@ class MonitorStackCLI(click.MultiCommand):
 
     def get_command(self, ctx, name):
         """Load a command and run it."""
-
         for _, pkg_name, _ in pkgutil.iter_modules([self.cmd_folder]):
             if pkg_name == name:
                 mod = importlib.import_module(
@@ -102,7 +99,6 @@ VALID_OUTPUT_FORMATS = [
 @pass_context
 def cli(ctx, output_format, verbose):
     """A complex command line interface."""
-
     ctx.verbose = verbose
     pass
 
@@ -110,7 +106,6 @@ def cli(ctx, output_format, verbose):
 @cli.resultcallback(replace=True)
 def process_result(result, output_format, verbose):
     """Render the output into the proper format."""
-
     module_name = 'monitorstack.common.formatters'
     method_name = 'write_{}'.format(output_format)
     output_formatter = getattr(
