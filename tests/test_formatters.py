@@ -35,7 +35,7 @@ class TestFormatters(object):
 
     def test_current_time(self):
         """Test current_time()."""
-        result = formatters.current_time()
+        result = formatters._current_time()
         assert isinstance(result, int)
         assert result > 0
 

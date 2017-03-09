@@ -46,7 +46,7 @@ class LibvirtStub(object):
 
 
 class TestKvm(object):
-    """Tests for the uptime monitor class."""
+    """Tests for the kvm monitor."""
 
     def test_run(self):
         """Ensure the run() method works."""
