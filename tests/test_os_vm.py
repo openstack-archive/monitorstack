@@ -40,40 +40,70 @@ class MockProject(object):
         self.name = 'testing'
 
 
+def mock_get_projects(arg1):
+    """Mocked get_projects()."""
+    projects = MockProject()
+    return [projects]
+
+
+def mock_get_compute_limits(self, project_id, interface):
+    """Mocked get_compute_limits()."""
+    return {
+        'quota_set': {
+            'instances': 10,
+            'cores': 10,
+            'ram': 1024,
+        }
+    }
+
+
 class TestOs(object):
     """Tests for the os_vm.* monitors."""
 
     def test_os_vm_quota_cores_success(self, monkeypatch):
-        """Ensure the run() method works."""
-        def mock_get_projects(arg1):
-            projects = MockProject()
-            return [projects]
-
-        def mock_get_compute_limits(self, project_id, interface):
-            return {'quota_set': {'cores': 10}}
-
+        """Ensure os_vm_quota_cores method works with success."""
         monkeypatch.setattr(Ost, 'get_projects', mock_get_projects)
         monkeypatch.setattr(Ost, 'get_compute_limits', mock_get_compute_limits)
 
         result = _runner('os_vm_quota_cores')
-        from pprint import pprint
-        pprint(result)
         assert result['measurement_name'] == 'os_vm_quota_cores'
         assert result['meta'] == {'quotas': 'cores'}
 
     def test_os_vm_quota_cores_failure(self):
-        """Ensure the run() method works."""
+        """Ensure os_vm_quota_cores method works with failure."""
         result = _runner('os_vm_quota_cores')
         assert result['measurement_name'] == 'os_vm_quota_cores'
         assert result['meta'] == {'quotas': 'cores'}
 
-    def test_os_vm_quota_instances(self):
-        """Ensure the run() method works."""
-        pass
+    def test_os_vm_quota_instance_success(self, monkeypatch):
+        """Ensure os_vm_quota_cores method works with success."""
+        monkeypatch.setattr(Ost, 'get_projects', mock_get_projects)
+        monkeypatch.setattr(Ost, 'get_compute_limits', mock_get_compute_limits)
 
-    def test_os_vm_quota_ram(self):
+        result = _runner('os_vm_quota_instance')
+        assert result['measurement_name'] == 'os_vm_quota_instance'
+        assert result['meta'] == {'quotas': 'instances'}
+
+    def test_os_vm_quota_instance_failure(self):
         """Ensure the run() method works."""
-        pass
+        result = _runner('os_vm_quota_instance')
+        assert result['measurement_name'] == 'os_vm_quota_instance'
+        assert result['meta'] == {'quotas': 'instances'}
+
+    def test_os_vm_quota_ram_success(self, monkeypatch):
+        """Ensure os_vm_quota_cores method works with success."""
+        monkeypatch.setattr(Ost, 'get_projects', mock_get_projects)
+        monkeypatch.setattr(Ost, 'get_compute_limits', mock_get_compute_limits)
+
+        result = _runner('os_vm_quota_ram')
+        assert result['measurement_name'] == 'os_vm_quota_ram'
+        assert result['meta'] == {'quotas': 'ram'}
+
+    def test_os_vm_quota_ram_failure(self):
+        """Ensure the run() method works."""
+        result = _runner('os_vm_quota_ram')
+        assert result['measurement_name'] == 'os_vm_quota_ram'
+        assert result['meta'] == {'quotas': 'ram'}
 
     def test_os_vm_used_cores(self):
         """Ensure the run() method works."""
