@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Get nova cores quotas."""
 
 import click
 
@@ -29,6 +30,7 @@ COMMAND_NAME = 'os_vm_quota_cores'
               default='openstack.ini')
 @pass_context
 def cli(ctx, config_file):
+    """Get nova cores quotas."""
     setattr(cli, '__doc__', DOC)
 
     output = {

@@ -18,6 +18,7 @@ import json
 from click.testing import CliRunner
 
 from monitorstack.cli import cli
+from monitorstack.utils.os_utils import OpenStack as Ost
 
 
 def _runner(module):
@@ -27,14 +28,40 @@ def _runner(module):
         module,
         '--config-file', 'tests/files/test-openstack.ini',
     ])
-    print(result)
     return json.loads(result.output)
+
+
+class MockProject(object):
+    """Mock class for OpenStack class."""
+
+    def __init__(self):
+        """Mock init."""
+        self.id = 'testing'
+        self.name = 'testing'
 
 
 class TestOs(object):
     """Tests for the os_vm.* monitors."""
 
-    def test_os_vm_quota_cores(self):
+    def test_os_vm_quota_cores_success(self, monkeypatch):
+        """Ensure the run() method works."""
+        def mock_get_projects(arg1):
+            projects = MockProject()
+            return [projects]
+
+        def mock_get_compute_limits(self, project_id, interface):
+            return {'quota_set': {'cores': 10}}
+
+        monkeypatch.setattr(Ost, 'get_projects', mock_get_projects)
+        monkeypatch.setattr(Ost, 'get_compute_limits', mock_get_compute_limits)
+
+        result = _runner('os_vm_quota_cores')
+        from pprint import pprint
+        pprint(result)
+        assert result['measurement_name'] == 'os_vm_quota_cores'
+        assert result['meta'] == {'quotas': 'cores'}
+
+    def test_os_vm_quota_cores_failure(self):
         """Ensure the run() method works."""
         result = _runner('os_vm_quota_cores')
         assert result['measurement_name'] == 'os_vm_quota_cores'
