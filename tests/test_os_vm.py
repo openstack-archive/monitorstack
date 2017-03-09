@@ -22,7 +22,12 @@ from monitorstack.cli import cli
 
 def _runner(module):
     runner = CliRunner()
-    result = runner.invoke(cli, ['-f', 'json', module])
+    result = runner.invoke(cli, [
+        '-f', 'json',
+        module,
+        '--config-file', 'tests/files/test-openstack.ini',
+    ])
+    print(result)
     return json.loads(result.output)
 
 
@@ -31,11 +36,9 @@ class TestOs(object):
 
     def test_os_vm_quota_cores(self):
         """Ensure the run() method works."""
-
-        # result_json = _runner(module='os_vm_quota_cores')
-        # variables = result_json['variables']
-        # meta = result_json['meta']
-        pass
+        result = _runner('os_vm_quota_cores')
+        assert result['measurement_name'] == 'os_vm_quota_cores'
+        assert result['meta'] == {'quotas': 'cores'}
 
     def test_os_vm_quota_instances(self):
         """Ensure the run() method works."""
