@@ -20,7 +20,7 @@ import unittest
 from monitorstack import utils
 
 
-class TestUptime(unittest.TestCase):
+class TestUtils(unittest.TestCase):
     """Tests for the utilities."""
 
     def setUp(self):
