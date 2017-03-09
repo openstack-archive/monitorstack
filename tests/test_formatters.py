@@ -13,7 +13,6 @@
 # limitations under the License.
 """Tests the output methods."""
 import json
-import platform
 
 from monitorstack.common import formatters
 
@@ -22,10 +21,28 @@ SAMPLE_RESULT = {
     'message': 'uptime is ok',
     'measurement_name': 'system_uptime',
     'meta': {
-        'platform': platform.platform(),
+        'platform': 'example_platform',
     },
     'variables': {
         'uptime': '29587.75'
+    }
+}
+
+SAMPLE_RESULT_NO_META = {
+    'exit_code': 0,
+    'message': 'uptime is ok',
+    'measurement_name': 'system_uptime',
+    'variables': {
+        'uptime': '29587.75'
+    }
+}
+
+SAMPLE_RESULT_NO_META_WITH_FLOAT = {
+    'exit_code': 0,
+    'message': 'uptime is ok',
+    'measurement_name': 'system_uptime',
+    'variables': {
+        'uptime': float(29587.75)
     }
 }
 
@@ -61,3 +78,20 @@ class TestFormatters(object):
         formatters.write_telegraf(SAMPLE_RESULT)
         out, err = capsys.readouterr()
         assert out.startswith(SAMPLE_RESULT['measurement_name'])
+
+    def test_write_telegraf_without_meta(self, capsys):
+        """Test write_telegrat() module without meta in result."""
+        formatters.write_telegraf(SAMPLE_RESULT_NO_META)
+        out, err = capsys.readouterr()
+        assert out.startswith(SAMPLE_RESULT['measurement_name'])
+
+    def test_write_telegraf_line_format_with_float(self):
+        """Test _telegraf_line_format() with float in meta."""
+        sets = {
+            'platform': 'example_platform',
+            'othervar': float(3)
+        }
+        result = formatters._telegraf_line_format(sets=sets, quote=True)
+        assert isinstance(result, str)
+        assert 'othervar=3' in result
+        assert 'platform="example_platform"' in result
