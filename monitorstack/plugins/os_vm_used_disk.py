@@ -46,8 +46,8 @@ def cli(ctx, config_file):
     used_collection = collections.Counter()
     nova_config = utils.read_config(config_file=config_file)['nova']
     _ost = ost.OpenStack(os_auth_args=nova_config)
-    flavors = _ost.get_flavors()
     try:
+        flavors = _ost.get_flavors()
         variables = output['variables']
         for used in _ost.get_consumer_usage():
             flavor = flavors[used['flavor']['id']]

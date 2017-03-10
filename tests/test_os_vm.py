@@ -58,6 +58,8 @@ def mock_get_flavors(self):
         1: {
             'name': 'flavor_one',
             'vcpus': 2,
+            'disk': 10,
+            'ram': 1024,
         }
     }
 
@@ -143,14 +145,50 @@ class TestOs(object):
         assert result['measurement_name'] == 'os_vm_used_cores'
         assert result['meta'] == {'used': 'cores'}
 
-    def test_os_vm_used_disk(self):
-        """Ensure the run() method works."""
-        pass
+    def test_os_vm_used_disk_success(self, monkeypatch):
+        """Ensure os_vm_used_disk method works with success."""
+        monkeypatch.setattr(Ost, 'get_flavors', mock_get_flavors)
+        monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
 
-    def test_os_vm_used_instances(self):
-        """Ensure the run() method works."""
-        pass
+        result = _runner('os_vm_used_disk')
+        assert result['measurement_name'] == 'os_vm_used_disk'
+        assert result['meta']['used'] == 'disk'
+        assert result['meta']['flavor_one']
 
-    def test_os_vm_used_ram(self):
-        """Ensure the run() method works."""
-        pass
+    def test_os_vm_used_disk_failure(self):
+        """Ensure os_vm_used_disk method works with failure."""
+        result = _runner('os_vm_used_disk')
+        assert result['measurement_name'] == 'os_vm_used_disk'
+        assert result['meta'] == {'used': 'disk'}
+
+    def test_os_vm_used_instance_success(self, monkeypatch):
+        """Ensure os_vm_used_instance method works with success."""
+        monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
+
+        result = _runner('os_vm_used_instance')
+        assert result['measurement_name'] == 'os_vm_used_instance'
+        assert result['meta']['used'] == 'instances'
+        assert result['variables'] == {'test_name': 1}
+
+    def test_os_vm_used_instance_failure(self):
+        """Ensure os_vm_used_instance method works with failure."""
+        result = _runner('os_vm_used_instance')
+        assert result['measurement_name'] == 'os_vm_used_instance'
+        assert result['meta'] == {'used': 'instances'}
+
+    def test_os_vm_used_ram_success(self, monkeypatch):
+        """Ensure os_vm_used_ram method works with success."""
+        monkeypatch.setattr(Ost, 'get_flavors', mock_get_flavors)
+        monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
+
+        result = _runner('os_vm_used_ram')
+        assert result['measurement_name'] == 'os_vm_used_ram'
+        assert result['meta']['used'] == 'ram'
+        assert result['meta']['flavor_one']
+        assert result['variables'] == {'test_name': 1024}
+
+    def test_os_vm_used_ram_failure(self):
+        """Ensure os_vm_used_ram method works with failure."""
+        result = _runner('os_vm_used_ram')
+        assert result['measurement_name'] == 'os_vm_used_ram'
+        assert result['meta'] == {'used': 'ram'}
