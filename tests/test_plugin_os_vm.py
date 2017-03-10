@@ -48,7 +48,6 @@ def mock_get_consumer_usage(self):
             'id': 1,
             'name': 'flavor_one',
         }
-
     }]
 
 

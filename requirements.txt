@@ -1,4 +1,5 @@
 click
 openstacksdk>=0.9.14
+psutil>=5.2.0
 six
 stevedore

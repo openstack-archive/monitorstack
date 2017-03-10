@@ -113,6 +113,7 @@ def process_result(result, output_format, verbose):
         method_name
     )
     output_formatter(result)
+    sys.exit(result['exit_code'])
 
 
 if __name__ == '__main__':
