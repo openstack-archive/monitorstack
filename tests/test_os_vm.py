@@ -40,6 +40,28 @@ class MockProject(object):
         self.name = 'testing'
 
 
+def mock_get_consumer_usage(self):
+    """Mocked get_consumer_usage()."""
+    return [{
+        'name': 'test_name',
+        'flavor': {
+            'id': 1,
+            'name': 'flavor_one',
+        }
+
+    }]
+
+
+def mock_get_flavors(self):
+    """Mocked get_flavors()."""
+    return {
+        1: {
+            'name': 'flavor_one',
+            'vcpus': 2,
+        }
+    }
+
+
 def mock_get_projects(arg1):
     """Mocked get_projects()."""
     projects = MockProject()
@@ -85,13 +107,13 @@ class TestOs(object):
         assert result['meta'] == {'quotas': 'instances'}
 
     def test_os_vm_quota_instance_failure(self):
-        """Ensure the run() method works."""
+        """Ensure os_vm_quota_cores method works with failure."""
         result = _runner('os_vm_quota_instance')
         assert result['measurement_name'] == 'os_vm_quota_instance'
         assert result['meta'] == {'quotas': 'instances'}
 
     def test_os_vm_quota_ram_success(self, monkeypatch):
-        """Ensure os_vm_quota_cores method works with success."""
+        """Ensure os_vm_quota_ram method works with success."""
         monkeypatch.setattr(Ost, 'get_projects', mock_get_projects)
         monkeypatch.setattr(Ost, 'get_compute_limits', mock_get_compute_limits)
 
@@ -100,14 +122,26 @@ class TestOs(object):
         assert result['meta'] == {'quotas': 'ram'}
 
     def test_os_vm_quota_ram_failure(self):
-        """Ensure the run() method works."""
+        """Ensure os_vm_quota_ram method works with failure."""
         result = _runner('os_vm_quota_ram')
         assert result['measurement_name'] == 'os_vm_quota_ram'
         assert result['meta'] == {'quotas': 'ram'}
 
-    def test_os_vm_used_cores(self):
-        """Ensure the run() method works."""
-        pass
+    def test_os_vm_used_cores_success(self, monkeypatch):
+        """Ensure os_vm_used_cores method works with success."""
+        monkeypatch.setattr(Ost, 'get_flavors', mock_get_flavors)
+        monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
+
+        result = _runner('os_vm_used_cores')
+        assert result['measurement_name'] == 'os_vm_used_cores'
+        assert result['meta']['used'] == 'cores'
+        assert result['meta']['flavor_one']
+
+    def test_os_vm_used_cores_failure(self):
+        """Ensure os_vm_used_cores method works with failure."""
+        result = _runner('os_vm_used_cores')
+        assert result['measurement_name'] == 'os_vm_used_cores'
+        assert result['meta'] == {'used': 'cores'}
 
     def test_os_vm_used_disk(self):
         """Ensure the run() method works."""
