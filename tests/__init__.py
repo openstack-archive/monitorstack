@@ -13,3 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """This an __init__.py."""
+
+import os
+
+from monitorstack import utils
+
+
+def read_config():
+    """Load the test config file."""
+    os_config_file = os.path.expanduser(
+        os.path.abspath(
+            os.path.dirname(__file__) + '/files/test-openstack.ini'
+        )
+    )
+    return utils.read_config(os_config_file)

@@ -38,20 +38,22 @@ class MockProject(object):
         """Mock init."""
         self.id = 'testing'
         self.name = 'testing'
+        self.project_id = 12345
 
 
-def mock_get_consumer_usage(self):
+def mock_get_consumer_usage(*args, **kwargs):
     """Mocked get_consumer_usage()."""
     return [{
         'name': 'test_name',
+        'project_id': 12345,
         'flavor': {
             'id': 1,
-            'name': 'flavor_one',
+            'name': 'flavor_one'
         }
     }]
 
 
-def mock_get_flavors(self):
+def mock_get_flavors(*args, **kwargs):
     """Mocked get_flavors()."""
     return {
         1: {
@@ -63,13 +65,27 @@ def mock_get_flavors(self):
     }
 
 
-def mock_get_projects(arg1):
+def mock_get_flavor(*args, **kwargs):
+    """Mocked get_flavor(id)."""
+    return {
+        'name': 'flavor_one',
+        'vcpus': 2,
+        'disk': 10,
+        'ram': 1024,
+    }
+
+
+def mock_get_project_name(*args, **kwargs):
     """Mocked get_projects()."""
-    projects = MockProject()
-    return [projects]
+    return 'test_name'
 
 
-def mock_get_compute_limits(self, project_id, interface):
+def mock_get_projects(*args, **kwargs):
+    """Mocked get_projects()."""
+    return [MockProject()]
+
+
+def mock_get_compute_limits(*args, **kwargs):
     """Mocked get_compute_limits()."""
     return {
         'quota_set': {
@@ -131,6 +147,8 @@ class TestOs(object):
     def test_os_vm_used_cores_success(self, monkeypatch):
         """Ensure os_vm_used_cores method works with success."""
         monkeypatch.setattr(Ost, 'get_flavors', mock_get_flavors)
+        monkeypatch.setattr(Ost, 'get_flavor', mock_get_flavor)
+        monkeypatch.setattr(Ost, 'get_project_name', mock_get_project_name)
         monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
 
         result = _runner('os_vm_used_cores')
@@ -147,6 +165,8 @@ class TestOs(object):
     def test_os_vm_used_disk_success(self, monkeypatch):
         """Ensure os_vm_used_disk method works with success."""
         monkeypatch.setattr(Ost, 'get_flavors', mock_get_flavors)
+        monkeypatch.setattr(Ost, 'get_flavor', mock_get_flavor)
+        monkeypatch.setattr(Ost, 'get_project_name', mock_get_project_name)
         monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
 
         result = _runner('os_vm_used_disk')
@@ -162,6 +182,9 @@ class TestOs(object):
 
     def test_os_vm_used_instance_success(self, monkeypatch):
         """Ensure os_vm_used_instance method works with success."""
+        monkeypatch.setattr(Ost, 'get_flavors', mock_get_flavors)
+        monkeypatch.setattr(Ost, 'get_flavor', mock_get_flavor)
+        monkeypatch.setattr(Ost, 'get_project_name', mock_get_project_name)
         monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
 
         result = _runner('os_vm_used_instance')
@@ -178,6 +201,8 @@ class TestOs(object):
     def test_os_vm_used_ram_success(self, monkeypatch):
         """Ensure os_vm_used_ram method works with success."""
         monkeypatch.setattr(Ost, 'get_flavors', mock_get_flavors)
+        monkeypatch.setattr(Ost, 'get_flavor', mock_get_flavor)
+        monkeypatch.setattr(Ost, 'get_project_name', mock_get_project_name)
         monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
 
         result = _runner('os_vm_used_ram')

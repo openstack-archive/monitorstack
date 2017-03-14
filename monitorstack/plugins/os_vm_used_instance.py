@@ -49,11 +49,19 @@ def cli(ctx, config_file):
     try:
         variables = output['variables']
         for used in _ost.get_consumer_usage():
-            used_collection[used['name']] += 1
+            project_name = _ost.get_project_name(project_id=used['project_id'])
+            used_collection[project_name] += 1
+            flavor_id = used['flavor']['id']
+            output['meta'][flavor_id] = True
+            flavor_name = _ost.get_flavor_name(flavor_id=flavor_id)
+            output['meta'][flavor_name] = True
         variables.update(used_collection)
     except Exception as exp:
         output['exit_code'] = 1
-        output['message'] = '{} failed -- Error: {}'.format(COMMAND_NAME, exp)
+        output['message'] = '{} failed -- {}'.format(
+            COMMAND_NAME,
+            utils.log_exception(exp=exp)
+        )
     else:
         output['exit_code'] = 0
         output['message'] = '{} is ok'.format(COMMAND_NAME)

@@ -53,7 +53,10 @@ def cli(ctx, config_file):
             variables[project.name] = int(limits['quota_set']['instances'])
     except Exception as exp:
         output['exit_code'] = 1
-        output['message'] = '{} failed -- Error: {}'.format(COMMAND_NAME, exp)
+        output['message'] = '{} failed -- {}'.format(
+            COMMAND_NAME,
+            utils.log_exception(exp=exp)
+        )
     else:
         output['exit_code'] = 0
         output['message'] = '{} is ok'.format(COMMAND_NAME)

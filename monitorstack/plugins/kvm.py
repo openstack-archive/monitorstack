@@ -18,14 +18,15 @@ import socket
 
 import click
 
+from monitorstack import utils
 from monitorstack.cli import pass_context
 
 
 DOC = """Get metrics from a KVM hypervisor."""
-COMMAND = 'kvm'
+COMMAND_NAME = 'kvm'
 
 
-@click.command(COMMAND, short_help=DOC.split('\n')[0])
+@click.command(COMMAND_NAME, short_help=DOC.split('\n')[0])
 @pass_context
 def cli(ctx):
     """Get metrics from a KVM hypervisor."""
@@ -60,7 +61,10 @@ def cli(ctx):
 
     except Exception as exp:
         output['exit_code'] = 1
-        output['message'] = 'kvm failed -- Error: {}'.format(exp)
+        output['message'] = '{} failed -- {}'.format(
+            COMMAND_NAME,
+            utils.log_exception(exp=exp)
+        )
     else:
         output['exit_code'] = 0
         output['message'] = 'kvm is ok'
