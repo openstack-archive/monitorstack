@@ -20,11 +20,11 @@ import time
 import traceback
 
 try:
-    if sys.version_info > (3, 2, 0):
+    if sys.version_info > (3, 2, 0):  # pragma: no cover
         import configparser as ConfigParser
-    else:
+    else:  # pragma: no cover
         import ConfigParser
-except ImportError:
+except ImportError:  # pragma: no cover
         raise SystemExit('No configparser module was found.')
 
 import diskcache

@@ -13,9 +13,19 @@
 # limitations under the License.
 """OpenStack-related utilities."""
 
+import sys
+
 try:
-    from openstack import connection as os_conn
-except ImportError as e:
+    if sys.version_info > (3, 2, 0):  # pragma: no cover
+        import urllib.parse as urlparse
+    else:  # pragma: no cover
+        import urlparse
+except ImportError:  # pragma: no cover
+        raise SystemExit('No urlparse module was found.')
+
+try:
+    from openstack import connection as os_conn  # pragma: no cover
+except ImportError as e:  # pragma: no cover
     raise SystemExit('OpenStack plugins require access to the OpenStackSDK.'
                      ' Please install "python-openstacksdk".'
                      ' ERROR: %s' % str(e))
@@ -41,6 +51,22 @@ class OpenStack(object):
         :returns: object
         """
         return os_conn.Connection(**self.os_auth_args)
+
+    def _session_req(self, path, service_type, interface='internal'):
+        """Return compute resource limits for a project.
+
+        :param path: URL path to make a request against.
+        :type path: str
+        :param interface: Interface name, normally [internal, public, admin].
+        :type interface: str
+        :returns: dict
+        """
+        endpoint_url = self.conn.session.get_endpoint(
+            interface=interface,
+            service_type=service_type
+        )
+        sess_url = urlparse.urljoin(endpoint_url, path)
+        return self.conn.session.get(sess_url).json()
 
     def get_consumer_usage(self, servers=None, marker=None, limit=512):
         """Retrieve current usage by an OpenStack cloud consumer.
@@ -81,14 +107,12 @@ class OpenStack(object):
         :type interface: str
         :returns: dict
         """
-        url = self.conn.session.get_endpoint(
-            interface=interface,
-            service_type='compute'
+        path = '/os-quota-sets/' + project_id
+        return self._session_req(
+            path=path,
+            service_type='compute',
+            interface=interface
         )
-        quota_data = self.conn.session.get(
-            url + '/os-quota-sets/' + project_id
-        )
-        return quota_data.json()
 
     def get_projects(self):
         """Retrieve a list of projects.
@@ -182,3 +206,17 @@ class OpenStack(object):
         :returns: str
         """
         return self.get_flavor(flavor_id=flavor_id)['name']
+
+    def get_volume_pool_stats(self, interface='internal'):
+        """Return volume pool usages.
+
+        :param interface: Interface name, normally [internal, public, admin].
+        :type interface: str
+        :returns: dict
+        """
+        path = '/scheduler-stats/get_pools?detail=True'
+        return self._session_req(
+            path=path,
+            service_type='volume',
+            interface=interface
+        )

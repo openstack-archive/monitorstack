@@ -13,12 +13,11 @@
 # limitations under the License.
 """Tests for the process plugin."""
 
-import json
+import mock
 
-from click.testing import CliRunner
-
-from monitorstack.cli import cli
 from monitorstack.plugins import process
+
+import tests  # Import the test base module
 
 
 class TestUptime(object):
@@ -26,25 +25,17 @@ class TestUptime(object):
 
     def test_run_failure(self):
         """Ensure the run() method works."""
-        runner = CliRunner()
         process_name = 'dont-go-chasing-waterfalls'
-        result = runner.invoke(cli, [
-            '-f', 'json',
-            'process', process_name])
-        result_json = json.loads(result.output)
-        assert result_json['variables'] == {process_name: 0}
-        assert result.exit_code == 1
+        result = tests.runner('process', extra_args=[process_name])
+        assert result['variables'] == {process_name: 0}
+        assert result['exit_code'] == 1
 
     def test_run_success(self):
         """Ensure the run() method works."""
-        runner = CliRunner()
         process_name = '/'
-        result = runner.invoke(cli, [
-            '-f', 'json',
-            'process', process_name])
-        result_json = json.loads(result.output)
-        assert result_json['variables'] == {process_name: 1}
-        assert result.exit_code == 0
+        result = tests.runner('process', extra_args=[process_name])
+        assert result['variables'] == {process_name: 1}
+        assert result['exit_code'] == 0
 
     def test_check_process_success(self, monkeypatch):
         """Ensure the check_process() method works."""
@@ -57,5 +48,23 @@ class TestUptime(object):
 
     def test_get_cmdlines(self):
         """Ensure the get_cmdlines() method works."""
-        cmdlines = process.get_cmdlines()
-        assert isinstance(cmdlines, list)
+        assert isinstance(process.get_cmdlines(), list)
+
+    def test_get_cmdlines_exception(self, monkeypatch):
+        """Ensure the get_cmdlines() method works."""
+        class _RaisePid(object):
+            pid = 'not-a-pid'
+
+            @staticmethod
+            def cmdline():
+                raise process.psutil.NoSuchProcess('not-a-pid')
+
+        def _mock_process_iter():
+            return [_RaisePid, _RaisePid, _RaisePid]
+
+        with mock.patch('psutil.process_iter') as MockClass:
+            MockClass.return_value = _mock_process_iter()
+            process_name = 'dont-go-chasing-waterfalls'
+            result = tests.runner('process', extra_args=[process_name])
+            assert result['variables'] == {process_name: 0}
+            assert result['exit_code'] == 1

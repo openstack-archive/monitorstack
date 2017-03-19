@@ -13,12 +13,9 @@
 # limitations under the License.
 """Tests for the uptime plugin."""
 
-import json
-
-from click.testing import CliRunner
-
-from monitorstack.cli import cli
 from monitorstack.plugins.uptime import get_uptime
+
+import tests  # Import the test base module
 
 
 class TestUptime(object):
@@ -26,11 +23,9 @@ class TestUptime(object):
 
     def test_run(self):
         """Ensure the run() method works."""
-        runner = CliRunner()
-        result = runner.invoke(cli, ['-f', 'json', 'uptime'])
-        result_json = json.loads(result.output)
-        assert 'uptime' in result_json['variables']
-        assert result.exit_code == 0
+        result = tests.runner('uptime')
+        assert 'uptime' in result['variables']
+        assert result['exit_code'] == 0
 
     def test_get_uptime(self):
         """Ensure the cli() method works."""

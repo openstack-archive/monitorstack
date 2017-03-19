@@ -159,6 +159,18 @@ class TestOsUtils(unittest.TestCase):
         """Tear down the test."""
         pass
 
+    def test__session_req(self):
+        """Test retrieving block pool stats."""
+        with mock.patch('openstack.connection.Connection') as MockClass:
+            MockClass.return_value = MockedOpenStackConn()
+            limits = self.osu._session_req(
+                path='test/path',
+                service_type='test-service',
+                interface='test-interface'
+            )
+            u = 'https://127.0.1.1/test-interface/test/path'
+            self.assertEquals(limits, {'url': u})
+
     def test_get_consumer_usage(self):
         """Test retrieving consumer usage."""
         with mock.patch('openstack.connection.Connection') as MockClass:
@@ -197,8 +209,19 @@ class TestOsUtils(unittest.TestCase):
         """Test retrieving consumer limits."""
         with mock.patch('openstack.connection.Connection') as MockClass:
             MockClass.return_value = MockedOpenStackConn()
-            limits = self.osu.get_compute_limits(project_id='not-a-uuid')
-            u = 'https://127.0.1.1/internal/compute/os-quota-sets/not-a-uuid'
+            limits = self.osu.get_compute_limits(project_id='not-a-uuid1')
+            u = 'https://127.0.1.1/os-quota-sets/not-a-uuid1'
+            self.assertEquals(limits, {'url': u})
+
+    def test_get_compute_limits_interface_set(self):
+        """Test retrieving consumer limits."""
+        with mock.patch('openstack.connection.Connection') as MockClass:
+            MockClass.return_value = MockedOpenStackConn()
+            limits = self.osu.get_compute_limits(
+                interface='test',
+                project_id='not-a-uuid2'
+            )
+            u = 'https://127.0.1.1/os-quota-sets/not-a-uuid2'
             self.assertEquals(limits, {'url': u})
 
     def test_get_projects(self):
@@ -244,3 +267,19 @@ class TestOsUtils(unittest.TestCase):
             MockClass.return_value = MockedOpenStackConn()
             flavor_name = self.osu.get_flavor_name(flavor_id=12345)
             self.assertEquals(flavor_name, 'test_12345')
+
+    def test_get_volume_pool_stats(self):
+        """Test retrieving block pool stats."""
+        with mock.patch('openstack.connection.Connection') as MockClass:
+            MockClass.return_value = MockedOpenStackConn()
+            limits = self.osu.get_volume_pool_stats()
+            u = 'https://127.0.1.1/scheduler-stats/get_pools?detail=True'
+            self.assertEquals(limits, {'url': u})
+
+    def test_get_volume_pool_stats_interface_set(self):
+        """Test retrieving block pool stats."""
+        with mock.patch('openstack.connection.Connection') as MockClass:
+            MockClass.return_value = MockedOpenStackConn()
+            limits = self.osu.get_volume_pool_stats(interface='test')
+            u = 'https://127.0.1.1/scheduler-stats/get_pools?detail=True'
+            self.assertEquals(limits, {'url': u})

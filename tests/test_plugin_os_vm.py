@@ -13,22 +13,9 @@
 # limitations under the License.
 """Tests for the KVM plugin."""
 
-import json
-
-from click.testing import CliRunner
-
-from monitorstack.cli import cli
 from monitorstack.utils.os_utils import OpenStack as Ost
 
-
-def _runner(module):
-    runner = CliRunner()
-    result = runner.invoke(cli, [
-        '-f', 'json',
-        module,
-        '--config-file', 'tests/files/test-openstack.ini',
-    ])
-    return json.loads(result.output)
+import tests  # Import the test base module
 
 
 class MockProject(object):
@@ -96,21 +83,32 @@ def mock_get_compute_limits(*args, **kwargs):
     }
 
 
-class TestOs(object):
+class TestOsVm(object):
     """Tests for the os_vm.* monitors."""
 
     def test_os_vm_quota_cores_success(self, monkeypatch):
         """Ensure os_vm_quota_cores method works with success."""
         monkeypatch.setattr(Ost, 'get_projects', mock_get_projects)
         monkeypatch.setattr(Ost, 'get_compute_limits', mock_get_compute_limits)
-
-        result = _runner('os_vm_quota_cores')
+        result = tests.runner(
+            'os_vm_quota_cores',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_quota_cores'
         assert result['meta'] == {'quotas': 'cores'}
 
     def test_os_vm_quota_cores_failure(self):
         """Ensure os_vm_quota_cores method works with failure."""
-        result = _runner('os_vm_quota_cores')
+        result = tests.runner(
+            'os_vm_quota_cores',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_quota_cores'
         assert result['meta'] == {'quotas': 'cores'}
 
@@ -119,13 +117,25 @@ class TestOs(object):
         monkeypatch.setattr(Ost, 'get_projects', mock_get_projects)
         monkeypatch.setattr(Ost, 'get_compute_limits', mock_get_compute_limits)
 
-        result = _runner('os_vm_quota_instance')
+        result = tests.runner(
+            'os_vm_quota_instance',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_quota_instance'
         assert result['meta'] == {'quotas': 'instances'}
 
     def test_os_vm_quota_instance_failure(self):
         """Ensure os_vm_quota_cores method works with failure."""
-        result = _runner('os_vm_quota_instance')
+        result = tests.runner(
+            'os_vm_quota_instance',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_quota_instance'
         assert result['meta'] == {'quotas': 'instances'}
 
@@ -134,13 +144,25 @@ class TestOs(object):
         monkeypatch.setattr(Ost, 'get_projects', mock_get_projects)
         monkeypatch.setattr(Ost, 'get_compute_limits', mock_get_compute_limits)
 
-        result = _runner('os_vm_quota_ram')
+        result = tests.runner(
+            'os_vm_quota_ram',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_quota_ram'
         assert result['meta'] == {'quotas': 'ram'}
 
     def test_os_vm_quota_ram_failure(self):
         """Ensure os_vm_quota_ram method works with failure."""
-        result = _runner('os_vm_quota_ram')
+        result = tests.runner(
+            'os_vm_quota_ram',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_quota_ram'
         assert result['meta'] == {'quotas': 'ram'}
 
@@ -151,14 +173,26 @@ class TestOs(object):
         monkeypatch.setattr(Ost, 'get_project_name', mock_get_project_name)
         monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
 
-        result = _runner('os_vm_used_cores')
+        result = tests.runner(
+            'os_vm_used_cores',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_used_cores'
         assert result['meta']['used'] == 'cores'
         assert result['meta']['flavor_one']
 
     def test_os_vm_used_cores_failure(self):
         """Ensure os_vm_used_cores method works with failure."""
-        result = _runner('os_vm_used_cores')
+        result = tests.runner(
+            'os_vm_used_cores',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_used_cores'
         assert result['meta'] == {'used': 'cores'}
 
@@ -169,14 +203,26 @@ class TestOs(object):
         monkeypatch.setattr(Ost, 'get_project_name', mock_get_project_name)
         monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
 
-        result = _runner('os_vm_used_disk')
+        result = tests.runner(
+            'os_vm_used_disk',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_used_disk'
         assert result['meta']['used'] == 'disk'
         assert result['meta']['flavor_one']
 
     def test_os_vm_used_disk_failure(self):
         """Ensure os_vm_used_disk method works with failure."""
-        result = _runner('os_vm_used_disk')
+        result = tests.runner(
+            'os_vm_used_disk',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_used_disk'
         assert result['meta'] == {'used': 'disk'}
 
@@ -187,14 +233,26 @@ class TestOs(object):
         monkeypatch.setattr(Ost, 'get_project_name', mock_get_project_name)
         monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
 
-        result = _runner('os_vm_used_instance')
+        result = tests.runner(
+            'os_vm_used_instance',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_used_instance'
         assert result['meta']['used'] == 'instances'
         assert result['variables'] == {'test_name': 1}
 
     def test_os_vm_used_instance_failure(self):
         """Ensure os_vm_used_instance method works with failure."""
-        result = _runner('os_vm_used_instance')
+        result = tests.runner(
+            'os_vm_used_instance',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_used_instance'
         assert result['meta'] == {'used': 'instances'}
 
@@ -205,7 +263,13 @@ class TestOs(object):
         monkeypatch.setattr(Ost, 'get_project_name', mock_get_project_name)
         monkeypatch.setattr(Ost, 'get_consumer_usage', mock_get_consumer_usage)
 
-        result = _runner('os_vm_used_ram')
+        result = tests.runner(
+            'os_vm_used_ram',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_used_ram'
         assert result['meta']['used'] == 'ram'
         assert result['meta']['flavor_one']
@@ -213,6 +277,12 @@ class TestOs(object):
 
     def test_os_vm_used_ram_failure(self):
         """Ensure os_vm_used_ram method works with failure."""
-        result = _runner('os_vm_used_ram')
+        result = tests.runner(
+            'os_vm_used_ram',
+            extra_args=[
+                '--config-file',
+                'tests/files/test-openstack.ini'
+            ]
+        )
         assert result['measurement_name'] == 'os_vm_used_ram'
         assert result['meta'] == {'used': 'ram'}

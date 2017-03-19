@@ -129,7 +129,7 @@ def process_result(results, output_format, **kwargs):
         sys.exit(exit_code)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     topdir = os.path.normpath(
         os.path.join(
             os.path.abspath(

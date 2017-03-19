@@ -21,6 +21,8 @@ from click.testing import CliRunner
 
 from monitorstack.cli import cli
 
+import tests  # Import the test base module
+
 
 def _runner(module):
     runner = CliRunner()
@@ -99,12 +101,12 @@ class TestKvm(unittest.TestCase):
     def test_run_failure_no_libvirt(self):
         """Ensure the run() method works."""
         sys.modules.pop('libvirt', None)
-        result = _runner('kvm')
-        self.assertTrue(isinstance(result, SystemExit))
+        result = tests.runner('kvm')
+        self.assertTrue(isinstance(result.exception, SystemExit))
 
     def test_run_failure(self):
         """Ensure the run() method works."""
         sys.modules['libvirt'] = LibvirtStubFailed()
-        result = _runner('kvm')
+        result = tests.runner('kvm')
         assert result['measurement_name'] == 'kvm'
         assert result['exit_code'] == 1
