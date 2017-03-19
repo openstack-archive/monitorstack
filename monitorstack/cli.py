@@ -98,14 +98,16 @@ VALID_OUTPUT_FORMATS = [
 )
 @click.option('-v', '--verbose', is_flag=True, help='Enables verbose mode.')
 @pass_context
-def cli(ctx, output_format, verbose):
+def cli(*args, **kwargs):
     """A complex command line interface."""
-    ctx.verbose = verbose
-    pass
+    try:
+        args[0].verbose = kwargs.get('verbose', False)
+    except IndexError:  # pragma: no cover
+        pass
 
 
 @cli.resultcallback(replace=True)
-def process_result(result, output_format, verbose):
+def process_result(results, output_format, **kwargs):
     """Render the output into the proper format."""
     module_name = 'monitorstack.common.formatters'
     method_name = 'write_{}'.format(output_format.replace('-', '_'))
@@ -113,8 +115,18 @@ def process_result(result, output_format, verbose):
         importlib.import_module(module_name),
         method_name
     )
-    output_formatter(result)
-    sys.exit(result['exit_code'])
+
+    # Force the output formatter into a list
+    if not isinstance(results, list):  # pragma: no cover
+        results = [results]
+
+    exit_code = 0
+    for result in results:
+        output_formatter(result)
+        if result['exit_code'] != 0:
+            exit_code = result['exit_code']
+    else:
+        sys.exit(exit_code)
 
 
 if __name__ == '__main__':
