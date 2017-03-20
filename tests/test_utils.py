@@ -37,7 +37,7 @@ class TestUtils(unittest.TestCase):
 
         self.g_testfile = os.path.join(
             os.path.expanduser('~'),
-            '.monitorstack.cache'
+            '.cache/monitorstack.cache'
         )
         self.t_testfile = tempfile.mkdtemp()
 

@@ -97,7 +97,7 @@ class LocalCache(object):
         if not self.cache_path:
             self.cache_path = os.path.join(
                 os.path.expanduser('~'),
-                '.monitorstack.cache'
+                '.cache/monitorstack.cache'
             )
         elif not self.cache_path.endswith('cache'):
             self.cache_path = '{}.cache'.format(self.cache_path)
