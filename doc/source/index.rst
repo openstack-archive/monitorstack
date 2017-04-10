@@ -7,8 +7,8 @@ that output data in various formats for different monitoring systems.
 Developers can quickly add new monitoring plugins (along with tests) without
 worrying about how to format the data.
 
-Documentation sections
-----------------------
+Overview
+--------
 
 .. toctree::
    :maxdepth: 2
@@ -17,3 +17,12 @@ Documentation sections
    configure
    usage
    develop
+
+Plugins
+-------
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   plugin-*
