@@ -154,3 +154,14 @@ class TestUtils(unittest.TestCase):
 
         self.assertTrue('Exception' in message)
         self.assertTrue('Trace' in message)
+
+
+class TestUtilsPytest(object):
+    """Pytest tests for utilities methods."""
+
+    def test_read_file(self, tmpdir):
+        """Test read_file() function."""
+        p = tmpdir.mkdir('test').join('hello.txt')
+        p.write('test content')
+        contents = utils.read_file(str(p))
+        assert contents == 'test content'
