@@ -174,3 +174,9 @@ def log_exception(exp):
     _exception = [i.strip() for i in str(exp).splitlines()]
     exception = ' -> '.join(_exception)
     return 'Exception [ %s ]: Trace: [ %s ]' % (exception, trace)
+
+
+def read_file(path):
+    """Read a file and return the contents."""
+    with open(path, 'rb') as f:
+        return f.read().strip()
