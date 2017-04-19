@@ -39,6 +39,9 @@ class LibvirtStub(object):
     class openReadOnly(object):  # noqa
         """Stubbed openReadOnly class."""
 
+        def __init__(self, connection_uri):  # noqa
+            pass
+
         def close(self, *args, **kwargs):  # noqa
             pass
 
@@ -62,6 +65,9 @@ class LibvirtStubFailed(object):
 
     class openReadOnly(object):  # noqa
         """Stubbed openReadOnly class."""
+
+        def __init__(self, connection_uri):  # noqa
+            pass
 
         def close(self, *args, **kwargs):  # noqa
             pass
@@ -94,7 +100,6 @@ class TestKvm(unittest.TestCase):
         assert variables['kvm_total_vcpus'] == 1
         assert 'kvm_scheduled_vcpus' in variables
         assert variables['kvm_scheduled_vcpus'] == 6
-        assert 'platform' in meta
         assert 'kvm_host_id' in meta
         assert result['exit_code'] == 0
 

@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Get metrics from a KVM hypervisor."""
-
-import platform
 import socket
 
 import click
@@ -43,23 +41,33 @@ def cli(ctx):
     output = {
         'measurement_name': 'kvm',
         'meta': {
-            'platform': platform.platform(),
             'kvm_host_id': abs(hash(socket.getfqdn()))
         }
     }
-    conn = libvirt.openReadOnly()
+
+    # Open a read-only connection to libvirt
+    conn = libvirt.openReadOnly("qemu:///system")
+
     try:
-        variables = output['variables'] = dict()
+        variables = dict()
+
+        # Get all of the KVM instances on this host.
         domains = conn.listDomainsID()
         variables['kvm_vms'] = len(domains)
         variables['kvm_total_vcpus'] = conn.getCPUMap()[0]
         variables['kvm_scheduled_vcpus'] = 0
+
+        # Loop through each instance to gather additional data.
         for domain in domains:
             variables['kvm_scheduled_vcpus'] += conn.lookupByID(
                 domain
             ).maxVcpus()
 
+        # Return the data.
+        output['variables'] = variables
+
     except Exception as exp:
+        # We may have picked up an exception while querying libvirt for data.
         output['exit_code'] = 1
         output['message'] = '{} failed -- {}'.format(
             COMMAND_NAME,
