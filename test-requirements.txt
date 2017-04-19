@@ -2,7 +2,9 @@
 # of appearance. Changing the order has an impact on the overall integration
 # process, which may cause wedges in the gate later.
 bashate>=0.2 # Apache-2.0
-flake8<2.6.0,>=2.5.4 # MIT
+flake8>=2.5.4,<2.6.0  # MIT
+flake8_docstrings==0.2.1.post1  # MIT
+flake8-import-order==0.11 # LGPLv3
 mock>=2.0  # BSD
 
 # this is required for the docs build jobs
