@@ -56,7 +56,7 @@ class TestMemcache(object):
 
     def test_get_memcached_stats(self, monkeypatch):
         """Ensure that get_memcached_stats() works."""
-        def mock_memcache_client(cls, (conn_tuple)):
+        def mock_memcache_client(cls, conn_tuple):
             """Mock a memcache client class."""
             return None
 
