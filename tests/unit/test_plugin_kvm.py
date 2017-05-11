@@ -13,24 +13,10 @@
 # limitations under the License.
 """Tests for the KVM plugin."""
 
-import json
 import sys
 import unittest
 
-from click.testing import CliRunner
-
-from monitorstack.cli import cli
-
 import tests.unit  # Import the test base module
-
-
-def _runner(module):
-    runner = CliRunner()
-    result = runner.invoke(cli, ['-f', 'json', module])
-    try:
-        return json.loads(result.output)
-    except Exception:
-        return result.exception
 
 
 class LibvirtStub(object):
@@ -91,7 +77,7 @@ class TestKvm(unittest.TestCase):
 
     def test_run_success(self):
         """Ensure the run() method works."""
-        result = _runner('kvm')
+        result = tests.runner('kvm')
         variables = result['variables']
         meta = result['meta']
         assert 'kvm_vms' in variables

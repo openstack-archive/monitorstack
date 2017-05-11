@@ -31,7 +31,8 @@ def runner(module, extra_args=None):
     """
     _runner = CliRunner()
     args = [
-        '-f', 'json',
+        '-f',
+        'json',
         module
     ]
     if extra_args:
