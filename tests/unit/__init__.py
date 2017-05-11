@@ -34,3 +34,13 @@ def read_config():
 def fake_version_info(major, minor, serial):
     """Return tuple for fake python version info."""
     return major, minor, serial
+
+
+class FakePopen(object):
+    """Fake Shell Commands."""
+    def __init__(self, return_code=0, *args, **kwargs):
+        self.returncode = return_code
+
+    @staticmethod
+    def communicate():
+        return 'stdout', 'stderr'
