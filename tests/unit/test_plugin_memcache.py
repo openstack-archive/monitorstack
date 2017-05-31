@@ -16,7 +16,7 @@ from monitorstack.plugins import memcache as monitorstack_memcache
 
 import pymemcache
 
-import tests
+import tests.unit
 
 
 class TestMemcache(object):

@@ -15,7 +15,10 @@
 
 from monitorstack.utils.os_utils import OpenStack as Ost
 
-import tests  # Import the test base module
+import tests.unit  # Import the test base module
+
+
+CONF_FILE = 'tests/unit/files/test-openstack.ini'
 
 
 class MockProject(object):
@@ -94,7 +97,7 @@ class TestOsVm(object):
             'os_vm_quota_cores',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_quota_cores'
@@ -106,7 +109,7 @@ class TestOsVm(object):
             'os_vm_quota_cores',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_quota_cores'
@@ -121,7 +124,7 @@ class TestOsVm(object):
             'os_vm_quota_instance',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_quota_instance'
@@ -133,7 +136,7 @@ class TestOsVm(object):
             'os_vm_quota_instance',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_quota_instance'
@@ -148,7 +151,7 @@ class TestOsVm(object):
             'os_vm_quota_ram',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_quota_ram'
@@ -160,7 +163,7 @@ class TestOsVm(object):
             'os_vm_quota_ram',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_quota_ram'
@@ -177,7 +180,7 @@ class TestOsVm(object):
             'os_vm_used_cores',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_used_cores'
@@ -190,7 +193,7 @@ class TestOsVm(object):
             'os_vm_used_cores',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_used_cores'
@@ -207,7 +210,7 @@ class TestOsVm(object):
             'os_vm_used_disk',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_used_disk'
@@ -220,7 +223,7 @@ class TestOsVm(object):
             'os_vm_used_disk',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_used_disk'
@@ -237,7 +240,7 @@ class TestOsVm(object):
             'os_vm_used_instance',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_used_instance'
@@ -250,7 +253,7 @@ class TestOsVm(object):
             'os_vm_used_instance',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_used_instance'
@@ -267,7 +270,7 @@ class TestOsVm(object):
             'os_vm_used_ram',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_used_ram'
@@ -281,7 +284,7 @@ class TestOsVm(object):
             'os_vm_used_ram',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_vm_used_ram'
