@@ -17,7 +17,7 @@ import mock
 
 from monitorstack.plugins import process
 
-import tests  # Import the test base module
+import tests.unit  # Import the test base module
 
 
 class TestUptime(object):

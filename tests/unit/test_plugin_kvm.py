@@ -21,7 +21,7 @@ from click.testing import CliRunner
 
 from monitorstack.cli import cli
 
-import tests  # Import the test base module
+import tests.unit  # Import the test base module
 
 
 def _runner(module):
