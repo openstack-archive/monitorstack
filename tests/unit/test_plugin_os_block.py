@@ -15,7 +15,9 @@
 
 from monitorstack.utils.os_utils import OpenStack as Ost
 
-import tests  # Import the test base module
+import tests.unit
+
+CONF_FILE = 'tests/unit/files/test-openstack.ini'
 
 
 def get_volume_pool_stats(*args, **kwargs):
@@ -54,7 +56,7 @@ class TestOsBlock(object):
             'os_block_pools_totals',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         variables = result['variables']
@@ -74,7 +76,7 @@ class TestOsBlock(object):
             'os_block_pools_totals',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_block_pools_totals'
@@ -91,7 +93,7 @@ class TestOsBlock(object):
             'os_block_pools_usage',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         variables = result['variables']
@@ -113,7 +115,7 @@ class TestOsBlock(object):
             'os_block_pools_usage',
             extra_args=[
                 '--config-file',
-                'tests/files/test-openstack.ini'
+                CONF_FILE
             ]
         )
         assert result['measurement_name'] == 'os_block_pools_usage'

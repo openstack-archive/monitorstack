@@ -135,7 +135,7 @@ class TestOSUtilsConnection(unittest.TestCase):
         """Test the OpenStack connection interface."""
         # load the base class for these tests.
         self.osu = os_utils.OpenStack(
-            os_auth_args=tests.read_config()['keystone']
+            os_auth_args=tests.unit.read_config()['keystone']
         )
         self.assertTrue(
             isinstance(
@@ -152,7 +152,7 @@ class TestOsUtils(unittest.TestCase):
         """Setup the test."""
         # load the base class for these tests.
         self.osu = os_utils.OpenStack(
-            os_auth_args=tests.read_config()['keystone']
+            os_auth_args=tests.unit.read_config()['keystone']
         )
 
     def tearDown(self):
