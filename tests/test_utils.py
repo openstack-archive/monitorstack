@@ -143,7 +143,7 @@ class TestUtils(unittest.TestCase):
                 raise BaseException
 
         self.count = 0
-        self.assertEquals(_success(), True)
+        self.assertEqual(_success(), True)
 
     def test_log_exception(self):
         """Test traceback formatter for exception messages."""
