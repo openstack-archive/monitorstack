@@ -43,6 +43,7 @@ class OpenStack(object):
         :type os_auth_args: dict
         """
         self.os_auth_args = os_auth_args
+        self.verify = self.os_auth_args.get('insecure', True) is False
 
     @property
     def conn(self):
@@ -50,7 +51,7 @@ class OpenStack(object):
 
         :returns: object
         """
-        return os_conn.Connection(**self.os_auth_args)
+        return os_conn.Connection(verify=self.verify, **self.os_auth_args)
 
     def _session_req(self, path, service_type, interface='internal'):
         """Return compute resource limits for a project.
