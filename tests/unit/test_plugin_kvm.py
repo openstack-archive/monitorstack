@@ -107,7 +107,7 @@ class TestKvm(unittest.TestCase):
         """Ensure the run() method works."""
         sys.modules.pop('libvirt', None)
         result = tests.runner('kvm')
-        self.assertTrue(isinstance(result.exception, SystemExit))
+        self.assertIsInstance(result.exception, SystemExit)
 
     def test_run_failure(self):
         """Ensure the run() method works."""

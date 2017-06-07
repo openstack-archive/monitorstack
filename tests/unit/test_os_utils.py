@@ -175,7 +175,7 @@ class TestOsUtils(unittest.TestCase):
         """Test retrieving consumer usage."""
         with mock.patch('openstack.connection.Connection') as MockClass:
             MockClass.return_value = MockedOpenStackConn()
-            self.assertTrue(isinstance(self.osu.get_consumer_usage(), list))
+            self.assertIsInstance(self.osu.get_consumer_usage(), list)
 
     def test_get_consumer_usage_with_servers(self):
         """Test retrieving consumer usage with servers list."""
