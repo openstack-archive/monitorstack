@@ -107,6 +107,7 @@ def write_telegraf(result):
     resultant = [result['measurement_name']]
     if 'meta' in result:
         resultant.append(_telegraf_line_format(sets=result['meta']))
+    resultant = [','.join(resultant).strip(',')]
     resultant.append(
         _telegraf_line_format(
             sets=result['variables'],
