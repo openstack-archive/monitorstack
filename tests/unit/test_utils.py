@@ -49,13 +49,13 @@ class TestUtils(unittest.TestCase):
                 os.remove(cache_db)
 
     def test_is_int_is_int(self):  # noqa
-        self.assertTrue(isinstance(utils.is_int(value=1), int))
+        self.assertIsInstance(utils.is_int(value=1), int)
 
     def test_is_int_is_int_str(self):  # noqa
-        self.assertTrue(isinstance(utils.is_int(value='1'), int))
+        self.assertIsInstance(utils.is_int(value='1'), int)
 
     def test_is_int_is_not_int(self):  # noqa
-        self.assertTrue(isinstance(utils.is_int(value='a'), str))
+        self.assertIsInstance(utils.is_int(value='a'), str)
 
     def test_read_config_not_found(self):  # noqa
         self.assertRaises(
@@ -65,7 +65,7 @@ class TestUtils(unittest.TestCase):
         )
 
     def test_read_config_found_dict_return(self):  # noqa
-        self.assertTrue(isinstance(self.config, dict))
+        self.assertIsInstance(self.config, dict)
 
     def test_read_config_found_defaults_in_sections(self):
         """Read config defaults from each section."""
