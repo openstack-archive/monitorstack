@@ -30,6 +30,8 @@ except ImportError as e:  # pragma: no cover
                      ' Please install "python-openstacksdk".'
                      ' ERROR: %s' % str(e))
 
+from distutils.util import strtobool
+
 from monitorstack import utils
 
 
@@ -43,7 +45,8 @@ class OpenStack(object):
         :type os_auth_args: dict
         """
         self.os_auth_args = os_auth_args
-        self.verify = self.os_auth_args.get('insecure', True) is False
+        insecure = bool(strtobool(self.os_auth_args.get('insecure', 'False')))
+        self.verify = insecure is False
 
     @property
     def conn(self):
