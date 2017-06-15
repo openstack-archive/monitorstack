@@ -130,12 +130,20 @@ class MockedOpenStackConn(object):
 
 class TestOSUtilsConnection(unittest.TestCase):
     """Tests for the utilities."""
+    def setUp(self):
+        """Setup the test."""
+        # load the base class for these tests.
+        self.config = tests.unit.read_config()['keystone']
+
+    def tearDown(self):
+        """Tear down the test."""
+        pass
 
     def test_conn(self):
         """Test the OpenStack connection interface."""
         # load the base class for these tests.
         self.osu = os_utils.OpenStack(
-            os_auth_args=tests.unit.read_config()['keystone']
+            os_auth_args=self.config
         )
         self.assertTrue(
             isinstance(
@@ -143,6 +151,21 @@ class TestOSUtilsConnection(unittest.TestCase):
                 os_utils.os_conn.Connection
             )
         )
+
+    def test_insecure(self):
+        """Test True insecure value."""
+        self.osu = os_utils.OpenStack(
+            os_auth_args=self.config
+        )
+        self.assertFalse(self.osu.verify)
+
+    def test_secure(self):
+        """Test False insecure value."""
+        with mock.patch.dict(self.config, {'insecure': 'False'}):
+            self.osu = os_utils.OpenStack(
+                os_auth_args=self.config
+            )
+            self.assertTrue(self.osu.verify)
 
 
 class TestOsUtils(unittest.TestCase):
