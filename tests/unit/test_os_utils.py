@@ -154,10 +154,11 @@ class TestOSUtilsConnection(unittest.TestCase):
 
     def test_insecure(self):
         """Test True insecure value."""
-        self.osu = os_utils.OpenStack(
-            os_auth_args=self.config
-        )
-        self.assertFalse(self.osu.verify)
+        with mock.patch.dict(self.config, {'insecure': 'True'}):
+            self.osu = os_utils.OpenStack(
+                os_auth_args=self.config
+            )
+            self.assertFalse(self.osu.verify)
 
     def test_secure(self):
         """Test False insecure value."""
