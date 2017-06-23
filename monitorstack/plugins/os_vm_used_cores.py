@@ -19,7 +19,6 @@ import click
 
 from monitorstack import utils
 from monitorstack.cli import pass_context
-from monitorstack.utils import os_utils as ost
 
 
 DOC = """Get nova used cores."""
@@ -34,6 +33,10 @@ COMMAND_NAME = 'os_vm_used_cores'
 def cli(ctx, config_file):
     """Get nova used cores."""
     setattr(cli, '__doc__', DOC)
+
+    # Lower level import because we only want to load this module
+    # when this plugin is called.
+    from monitorstack.utils import os_utils as ost
 
     output = {
         'measurement_name': COMMAND_NAME,

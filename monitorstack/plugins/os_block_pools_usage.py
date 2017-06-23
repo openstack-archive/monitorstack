@@ -17,7 +17,6 @@ import click
 
 from monitorstack import utils
 from monitorstack.cli import pass_context
-from monitorstack.utils import os_utils as ost
 
 
 DOC = """Get block storage usage from the available pools."""
@@ -32,6 +31,10 @@ COMMAND_NAME = 'os_block_pools_usage'
 def cli(ctx, config_file):
     """Get nova cores quotas."""
     setattr(cli, '__doc__', DOC)
+
+    # Lower level import because we only want to load this module
+    # when this plugin is called.
+    from monitorstack.utils import os_utils as ost
 
     output = {
         'measurement_name': COMMAND_NAME,
