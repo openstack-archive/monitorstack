@@ -23,8 +23,6 @@
 """Docs config for monitorstck."""
 import os
 
-import openstackdocstheme
-
 import pbr.version
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -47,7 +45,7 @@ import pbr.version
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'oslosphinx',
+    'openstackdocstheme',
     'sphinxmark'
 ]
 
@@ -133,8 +131,12 @@ html_theme_options = {
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [openstackdocstheme.get_html_theme_path()]
+# html_theme_path = ["."]
 
+# If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
+# using the given strftime format.
+# html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
 # -- Options for HTMLHelp output ------------------------------------------
 
