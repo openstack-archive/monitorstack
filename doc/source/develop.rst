@@ -23,9 +23,9 @@ Testing plugins
 ---------------
 
 Add tests in the ``tests`` directory and follow the ``uptime`` example. Here
-are the contents of ``tests/test_plugin_uptime.py`` as an example:
+are the contents of ``tests/int/test_plugin_uptime.py`` as an example:
 
-.. literalinclude:: ../../tests/test_plugin_uptime.py
+.. literalinclude:: ../../tests/int/test_plugin_uptime.py
 
 Running tests
 -------------
