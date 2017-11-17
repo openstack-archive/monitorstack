@@ -31,7 +31,6 @@ except ImportError as e:  # pragma: no cover
                      ' ERROR: %s' % str(e))
 
 from distutils.util import strtobool
-
 from monitorstack import utils
 
 
