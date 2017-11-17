@@ -23,8 +23,6 @@
 """Release notes for monitorstack."""
 import os
 
-import pbr.version
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -69,16 +67,12 @@ author = u'OpenStack-Ansible Contributors'
 oslosphinx_cgit_link = ('http://git.openstack.org/cgit/openstack'
                         '/{0}'.format(project))
 
-# The version info for the project you're documenting, acts as replacement for
-# |version| and |release|, also used in various other places throughout the
-# built documents.
-#
-# The short X.Y version.
-version_info = pbr.version.VersionInfo(project)
+# Release notes do not need a version number in the title, they
+# cover multiple releases.
 # The full version, including alpha/beta/rc tags.
-release = version_info.version_string_with_vcs()
+release = ''
 # The short X.Y version.
-version = version_info.canonical_version_string()
+version = ''
 
 # A few variables have to be set for the log-a-bug feature.
 #   giturl: The location of conf.py on Git. Must be set manually.
