@@ -14,6 +14,7 @@
 """OpenStack-related utilities."""
 
 import sys
+from distutils.util import strtobool
 
 try:
     if sys.version_info > (3, 2, 0):  # pragma: no cover
@@ -22,15 +23,12 @@ try:
         import urlparse
 except ImportError:  # pragma: no cover
         raise SystemExit('No urlparse module was found.')
-
 try:
     from openstack import connection as os_conn  # pragma: no cover
 except ImportError as e:  # pragma: no cover
     raise SystemExit('OpenStack plugins require access to the OpenStackSDK.'
                      ' Please install "python-openstacksdk".'
                      ' ERROR: %s' % str(e))
-
-from distutils.util import strtobool
 
 from monitorstack import utils
 
