@@ -77,6 +77,7 @@ version = ''
 repository_name = 'openstack/monitorstack'
 bug_project = 'monitorstack'
 bug_tag = ''
+giturl = u'https://git.openstack.org/cgit/openstack/monitorstack/tree/releasenotes/source'  # noqa
 
 html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
