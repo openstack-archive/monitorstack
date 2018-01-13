@@ -45,7 +45,7 @@ import pbr.version
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'oslosphinx',
+    'openstackdocstheme',
     # Disabled, does not build
     # 'sphinxmark'
 ]
@@ -118,13 +118,19 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'default'
+html_theme = 'openstackdocs'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 
 # Add any paths that contain custom themes here, relative to this directory.
+# html_theme_path = ["."]
+
+# If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
+# using the given strftime format.
+# html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%Y-%m-%d %H:%M'
 
 # -- Options for HTMLHelp output ------------------------------------------
 
@@ -189,9 +195,9 @@ if watermark == "":
     watermark = "Pre-release"
 
 # -- Options for sphinxmark -----------------------------------------------
-sphinxmark_enable = True
-sphinxmark_div = 'docs-body'
-sphinxmark_image = 'text'
-sphinxmark_text = watermark
-sphinxmark_text_color = (128, 128, 128)
-sphinxmark_text_size = 70
+#sphinxmark_enable = True
+#sphinxmark_div = 'docs-body'
+#sphinxmark_image = 'text'
+#sphinxmark_text = watermark
+#sphinxmark_text_color = (128, 128, 128)
+#sphinxmark_text_size = 70
