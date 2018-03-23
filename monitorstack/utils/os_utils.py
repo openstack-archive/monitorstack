@@ -27,7 +27,7 @@ try:
     from openstack import connection as os_conn  # pragma: no cover
 except ImportError as e:  # pragma: no cover
     raise SystemExit('OpenStack plugins require access to the OpenStackSDK.'
-                     ' Please install "python-openstacksdk".'
+                     ' Please install "openstacksdk".'
                      ' ERROR: %s' % str(e))
 
 from monitorstack import utils
