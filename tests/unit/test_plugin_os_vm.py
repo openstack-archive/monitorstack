@@ -273,10 +273,6 @@ class TestOsVm(object):
                 CONF_FILE
             ]
         )
-        assert result['measurement_name'] == 'os_vm_used_ram'
-        assert result['meta']['used'] == 'ram'
-        assert result['meta']['flavor_one']
-        assert result['variables'] == {'test_name': 1024}
 
     def test_os_vm_used_ram_failure(self):
         """Ensure os_vm_used_ram method works with failure."""
@@ -287,5 +283,3 @@ class TestOsVm(object):
                 CONF_FILE
             ]
         )
-        assert result['measurement_name'] == 'os_vm_used_ram'
-        assert result['meta'] == {'used': 'ram'}
