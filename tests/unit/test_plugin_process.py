@@ -62,7 +62,7 @@ class TestUptime(object):
         def _mock_process_iter():
             return [_RaisePid, _RaisePid, _RaisePid]
 
-        with mock.patch('psutil.process_iter') as MockClass:
+        with mock.patch('psutil.process_iter') as MockClass:  # noqa
             MockClass.return_value = _mock_process_iter()
             process_name = 'dont-go-chasing-waterfalls'
             result = tests.runner('process', extra_args=[process_name])
