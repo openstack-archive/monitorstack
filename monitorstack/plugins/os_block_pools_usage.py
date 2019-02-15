@@ -25,7 +25,7 @@ COMMAND_NAME = 'os_block_pools_usage'
 
 @click.command(COMMAND_NAME, short_help=DOC)
 @click.option('--config-file',
-              help='OpenStack configuration file',
+              help='MonitorStack configuration file',
               default='openstack.ini')
 @pass_context
 def cli(ctx, config_file):
@@ -43,28 +43,37 @@ def cli(ctx, config_file):
         },
         'variables': {}
     }
-    config = utils.read_config(config_file=config_file)['cinder']
-    interface = config.pop('interface', 'internal')
-    _ost = ost.OpenStack(os_auth_args=config)
+    os_config = utils.read_config(
+        config_file=config_file,
+        no_config_fatal=False
+    )
+    service_config = os_config.get('cinder')
+    cloud_config = os_config.get('cloud')
+    if service_config:
+        _ost = ost.OpenStack(os_auth_args=service_config)
+    else:
+        _ost = ost.OpenStack(os_auth_args=cloud_config)
+
     try:
         variables = output['variables']
-        for item in _ost.get_volume_pool_stats(interface=interface):
-            cap = item['capabilities']
-            total_capacity_gb = float(cap.get('total_capacity_gb', 0))
-            free_capacity_gb = float(cap.get('free_capacity_gb', 0))
-            percent_used = 100 * (free_capacity_gb / total_capacity_gb)
-            pool_name = cap.get('pool_name')
+        for item in _ost.get_volume_pool_stats():
+            cap = item.capabilities
+            pool_name = cap.get('volume_backend_name') or item.name
+            if pool_name in output['meta']:
+                continue
+            else:
+                output['meta'][pool_name] = True
+                total_capacity_gb = float(cap.get('total_capacity_gb', 0))
+                free_capacity_gb = float(cap.get('free_capacity_gb', 0))
+                percent_used = 100 * (free_capacity_gb / total_capacity_gb)
+                free_metric = '{}_free_capacity_gb'.format(pool_name)
+                variables[free_metric] = free_capacity_gb
 
-            output['meta'][pool_name] = True
+                total_metric = '{}_total_capacity_gb'.format(pool_name)
+                variables[total_metric] = total_capacity_gb
 
-            free_metric = '{}_free_capacity_gb'.format(pool_name)
-            variables[free_metric] = free_capacity_gb
-
-            total_metric = '{}_total_capacity_gb'.format(pool_name)
-            variables[total_metric] = total_capacity_gb
-
-            percent_metric = '{}_percent_used'.format(pool_name)
-            variables[percent_metric] = percent_used
+                percent_metric = '{}_percent_used'.format(pool_name)
+                variables[percent_metric] = percent_used
     except Exception as exp:
         output['exit_code'] = 1
         output['message'] = '{} failed -- {}'.format(
