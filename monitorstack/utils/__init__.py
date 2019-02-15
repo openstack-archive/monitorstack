@@ -139,15 +139,18 @@ class LocalCache(object):
         self.open_cache.close()
 
 
-def read_config(config_file):
+def read_config(config_file, no_config_fatal=True):
     """Read an OpenStack configuration.
 
     :param config_file: path to configuration file.
+    :param no_config_fatal: Boolean
     :type config_file: str
     """
     cfg = os.path.abspath(os.path.expanduser(config_file))
-    if not os.path.isfile(cfg):
+    if not os.path.isfile(cfg) and no_config_fatal:
         raise IOError('Config file "{}" was not found'.format(cfg))
+    elif not os.path.isfile(cfg) and not no_config_fatal:
+        return dict()
 
     parser = ConfigParser.ConfigParser()
     parser.optionxform = str
