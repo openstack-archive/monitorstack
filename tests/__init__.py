@@ -37,6 +37,7 @@ def runner(module, extra_args=None):
     ]
     if extra_args:
         args.extend(extra_args)
+
     result = _runner.invoke(cli, args)
     try:
         return json.loads(result.output)

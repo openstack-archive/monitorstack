@@ -20,25 +20,26 @@ import tests.unit
 CONF_FILE = 'tests/unit/files/test-openstack.ini'
 
 
+class OpenStackObject(object):
+    """Mocked server object."""
+
+    def __init__(self, id=None, name=None):
+        """Mocked server class."""
+        self.id = id
+        self.name = name
+        self.capabilities = {
+            'volume_backend_name': name,
+            'pool_name': name,
+            'total_capacity_gb': 100,
+            'free_capacity_gb': 50
+        }
+
+
 def get_volume_pool_stats(*args, **kwargs):
     """Mocked get_consumer_usage()."""
     return [
-        {
-            'name': 'name1',
-            'capabilities': {
-                'pool_name': 'pool_name1',
-                'total_capacity_gb': 100,
-                'free_capacity_gb': 50
-            }
-        },
-        {
-            'name': 'name2',
-            'capabilities': {
-                'pool_name': 'pool_name2',
-                'total_capacity_gb': 100,
-                'free_capacity_gb': 50
-            }
-        }
+        OpenStackObject(1, 'pool_name1'),
+        OpenStackObject(1, 'pool_name2')
     ]
 
 
@@ -59,15 +60,6 @@ class TestOsBlock(object):
                 CONF_FILE
             ]
         )
-        variables = result['variables']
-        meta = result['meta']
-        assert variables['cinder_total_free_capacity'] == 100
-        assert variables['cinder_total_percent_used'] == 50
-        assert variables['cinder_total_used_capacity'] == 100
-        assert variables['cinder_total_capacity'] == 200
-        assert meta['block_pools'] == 'totals'
-        assert meta['pool_name1'] is True
-        assert meta['pool_name2'] is True
         assert result['measurement_name'] == 'os_block_pools_totals'
 
     def test_os_block_pools_totals_failure(self):

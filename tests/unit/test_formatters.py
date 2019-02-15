@@ -140,7 +140,7 @@ class TestFormatters(object):
 
     def test_write_json(self, capsys):
         """Test write_json() module."""
-        formatters.write_json(SAMPLE_RESULT)
+        formatters.write_json(SAMPLE_RESULT, None)
         out, err = capsys.readouterr()
         result_json = json.loads(out)
         assert isinstance(result_json, dict)
@@ -149,7 +149,7 @@ class TestFormatters(object):
 
     def test_write_line(self, capsys):
         """Test write_line() module."""
-        formatters.write_line(SAMPLE_RESULT)
+        formatters.write_line(SAMPLE_RESULT, None)
         out, err = capsys.readouterr()
         assert out == "uptime {}\n".format(
             SAMPLE_RESULT['variables']['uptime']
@@ -157,13 +157,13 @@ class TestFormatters(object):
 
     def test_write_telegraf(self, capsys):
         """Test write_telegraf() module."""
-        formatters.write_telegraf(SAMPLE_RESULT)
+        formatters.write_telegraf(SAMPLE_RESULT, None)
         out, err = capsys.readouterr()
         assert out.startswith(SAMPLE_RESULT['measurement_name'])
 
     def test_write_telegraf_without_meta(self, capsys):
         """Test write_telegrat() module without meta in result."""
-        formatters.write_telegraf(SAMPLE_RESULT_NO_META)
+        formatters.write_telegraf(SAMPLE_RESULT_NO_META, None)
         out, err = capsys.readouterr()
         assert out.startswith(SAMPLE_RESULT['measurement_name'])
 
@@ -180,21 +180,21 @@ class TestFormatters(object):
 
     def test_write_rax_maas(self, capsys):
         """Test write_telegraf() module."""
-        formatters.write_rax_maas(SAMPLE_RESULT)
+        formatters.write_rax_maas(SAMPLE_RESULT, None)
         out, err = capsys.readouterr()
         assert SAMPLE_RESULT['message'] in out
         assert 'metric uptime float 29587.75' in out
 
     def test_write_rax_maas_with_types(self, capsys):
         """Test write_telegraf() module."""
-        formatters.write_rax_maas(SAMPLE_RESULT_MEASUREMENT_TYPE)
+        formatters.write_rax_maas(SAMPLE_RESULT_MEASUREMENT_TYPE, None)
         out, err = capsys.readouterr()
         assert SAMPLE_RESULT['message'] in out
         assert 'metric uptime testType 29587.75' in out
 
     def test_write_rax_maas_with_units(self, capsys):
         """Test write_telegraf() module."""
-        formatters.write_rax_maas(SAMPLE_RESULT_MEASUREMENT_UNITS)
+        formatters.write_rax_maas(SAMPLE_RESULT_MEASUREMENT_UNITS, None)
         out, err = capsys.readouterr()
         out_split = out.splitlines()
         assert [i for i in out_split if SAMPLE_RESULT['message'] in i]
@@ -202,7 +202,7 @@ class TestFormatters(object):
 
     def test_write_rax_maas_with_error(self, capsys):
         """Test write_telegraf() module."""
-        formatters.write_rax_maas(SAMPLE_RESULT_ERROR)
+        formatters.write_rax_maas(SAMPLE_RESULT_ERROR, None)
         out, err = capsys.readouterr()
         out_split = out.splitlines()
         assert [i for i in out_split if 'status error' in i]
