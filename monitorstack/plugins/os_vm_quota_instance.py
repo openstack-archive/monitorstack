@@ -25,7 +25,7 @@ COMMAND_NAME = 'os_vm_quota_instance'
 
 @click.command(COMMAND_NAME, short_help=DOC)
 @click.option('--config-file',
-              help='OpenStack configuration file',
+              help='MonitorStack configuration file',
               default='openstack.ini')
 @pass_context
 def cli(ctx, config_file):
@@ -43,9 +43,19 @@ def cli(ctx, config_file):
         },
         'variables': {}
     }
-    nova_config = utils.read_config(config_file=config_file)['nova']
-    interface = nova_config.pop('interface', 'internal')
-    _ost = ost.OpenStack(os_auth_args=nova_config)
+    os_config = utils.read_config(
+        config_file=config_file,
+        no_config_fatal=False
+    )
+    service_config = os_config.get('nova')
+    cloud_config = os_config.get('cloud')
+    if service_config:
+        interface = service_config.pop('interface', 'internal')
+        _ost = ost.OpenStack(os_auth_args=service_config)
+    else:
+        interface = 'internal'
+        _ost = ost.OpenStack(os_auth_args=cloud_config)
+
     try:
         variables = output['variables']
         for project in _ost.get_projects():
