@@ -13,17 +13,10 @@
 # limitations under the License.
 """OpenStack-related utilities."""
 
-import sys
 from distutils.util import strtobool
 
 try:
-    if sys.version_info > (3, 2, 0):  # pragma: no cover
-        import urllib.parse as urlparse
-    else:  # pragma: no cover
-        import urlparse
-except ImportError:  # pragma: no cover
-        raise SystemExit('No urlparse module was found.')
-try:
+    import openstack
     from openstack import connection as os_conn  # pragma: no cover
 except ImportError as e:  # pragma: no cover
     raise SystemExit('OpenStack plugins require access to the OpenStackSDK.'
@@ -43,8 +36,15 @@ class OpenStack(object):
         :type os_auth_args: dict
         """
         self.os_auth_args = os_auth_args
-        insecure = bool(strtobool(self.os_auth_args.get('insecure', 'False')))
-        self.verify = insecure is False
+        self.verify = False
+
+        if self.os_auth_args:
+            insecure = bool(
+                strtobool(
+                    self.os_auth_args.get('insecure', 'False')
+                )
+            )
+            self.verify = insecure is False
 
     @property
     def conn(self):
@@ -52,7 +52,12 @@ class OpenStack(object):
 
         :returns: object
         """
-        return os_conn.Connection(verify=self.verify, **self.os_auth_args)
+        if self.os_auth_args and 'cloud' in self.os_auth_args:
+            return openstack.connect(**self.os_auth_args)
+        elif self.os_auth_args:
+            return os_conn.Connection(verify=self.verify, **self.os_auth_args)
+        else:
+            return openstack.connect(cloud='default')
 
     def _session_req(self, path, service_type, interface='internal'):
         """Return compute resource limits for a project.
@@ -67,7 +72,7 @@ class OpenStack(object):
             interface=interface,
             service_type=service_type
         )
-        sess_url = urlparse.urljoin(endpoint_url, path)
+        sess_url = endpoint_url + path
         return self.conn.session.get(sess_url).json()
 
     def get_consumer_usage(self, servers=None, marker=None, limit=512):
