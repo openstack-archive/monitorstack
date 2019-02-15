@@ -18,15 +18,17 @@ import time
 
 import click
 
+from monitorstack import utils
 
-def write_json(result):
+
+def write_json(result, config_file):
     """Output in raw JSON format."""
     output = json.dumps(result, indent=2)
     click.echo(output)
     return True
 
 
-def write_line(result):
+def write_line(result, config_file):
     """Output in line format."""
     for key, value in result['variables'].items():
         click.echo("{} {}".format(key, value))
@@ -102,7 +104,7 @@ def _telegraf_line_format(sets, quote=False):
     return ','.join(store).rstrip(',')
 
 
-def write_telegraf(result):
+def write_telegraf(result, config_file):
     """Output in telegraf format."""
     resultant = [result['measurement_name']]
     if 'meta' in result:
@@ -120,7 +122,7 @@ def write_telegraf(result):
     return True
 
 
-def write_rax_maas(result):
+def write_rax_maas(result, config_file):
     """Output in Rackspace Monitoring as a Service format."""
     status = ['status']
     if result['exit_code'] == 0:
@@ -142,3 +144,37 @@ def write_rax_maas(result):
         click.echo(' '.join(metric))
 
     return True
+
+
+def write_elasticsearch(result, config_file):
+    """Output in elasticsearch format."""
+    import datetime
+    from elasticsearch import Elasticsearch
+
+    config = utils.read_config(config_file=config_file)
+    if 'elasticsearch' in config:
+        elastcisearch_config = config['elasticsearch']
+        es = Elasticsearch(**elastcisearch_config)
+    else:
+        es = Elasticsearch()
+
+    doc = {
+        'author': 'openstack',
+        'text': result['message'],
+        'timestamp': datetime.datetime.now(),
+        'measurement_name': result['measurement_name'],
+        'meta': result['meta'],
+        'variables': result['variables'],
+        'status': result['exit_code']
+    }
+
+    res = es.index(
+        index="monitorstack-{}".format(
+            datetime.date.today().strftime("%Y-%m-%d")
+        ),
+        id=_current_time(),
+        doc_type='openstack-metrics',
+        body=doc
+    )
+
+    click.echo(res['result'])
