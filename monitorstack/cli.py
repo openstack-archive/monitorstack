@@ -83,7 +83,8 @@ VALID_OUTPUT_FORMATS = [
     'json',
     'line',
     'telegraf',
-    'rax-maas'
+    'rax-maas',
+    'elasticsearch'
 ]
 
 
@@ -96,6 +97,9 @@ VALID_OUTPUT_FORMATS = [
         ', '.join(VALID_OUTPUT_FORMATS)
     ),
 )
+@click.option('--config-file',
+              help='MonitorStack configuration file',
+              default='openstack.ini')
 @click.option('-v', '--verbose', is_flag=True, help='Enables verbose mode.')
 @pass_context
 def cli(*args, **kwargs):
@@ -122,7 +126,7 @@ def process_result(results, output_format, **kwargs):
 
     exit_code = 0
     for result in results:
-        output_formatter(result)
+        output_formatter(result, kwargs['config_file'])
         if result['exit_code'] != 0:
             exit_code = result['exit_code']
     else:
