@@ -25,7 +25,7 @@ COMMAND_NAME = 'os_block_pools_usage'
 
 @click.command(COMMAND_NAME, short_help=DOC)
 @click.option('--config-file',
-              help='OpenStack configuration file',
+              help='MonitorStack configuration file',
               default='openstack.ini')
 @pass_context
 def cli(ctx, config_file):
@@ -43,9 +43,19 @@ def cli(ctx, config_file):
         },
         'variables': {}
     }
-    config = utils.read_config(config_file=config_file)['cinder']
-    interface = config.pop('interface', 'internal')
-    _ost = ost.OpenStack(os_auth_args=config)
+    os_config = utils.read_config(
+        config_file=config_file,
+        no_config_fatal=False
+    )
+    service_config = os_config.get('cinder')
+    cloud_config = os_config.get('cloud')
+    if service_config:
+        interface = service_config.pop('interface', 'internal')
+        _ost = ost.OpenStack(os_auth_args=service_config)
+    else:
+        interface = 'internal'
+        _ost = ost.OpenStack(os_auth_args=cloud_config)
+
     try:
         variables = output['variables']
         for item in _ost.get_volume_pool_stats(interface=interface):
