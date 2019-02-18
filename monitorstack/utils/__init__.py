@@ -123,7 +123,7 @@ class LocalCache(object):
 
         :returns: object
         """
-        return diskcache.Cache(directory=self.cache_path)
+        return diskcache.Cache(directory=self.cache_path, disk_pickle_protocol=2)
 
     def lc_open(self):
         """Open shelved data.
