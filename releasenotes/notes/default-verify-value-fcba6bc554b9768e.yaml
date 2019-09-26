@@ -1,5 +1,0 @@
----
-security:
-  - |
-    The default value of the ``insecure`` option is now `False`, which will
-    verify certificates of https connections.
